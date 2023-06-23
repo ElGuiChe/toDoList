@@ -30,7 +30,7 @@ export default function AddItem() {
       status: "pendiente",
     });
     console.log("Document written with ID: ", docRef.id);
-   window.location.reload();
+    window.location.reload();
   }
 
   return (
