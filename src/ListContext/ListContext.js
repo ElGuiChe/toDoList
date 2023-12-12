@@ -54,6 +54,8 @@ export default function ListCustomContext({ children }) {
 
   //Funciones para el componente Item
 
+  //Funciones ligadas al checklist
+
   function clickCheck(e) {
     
     if (e.target.checked === true) {
@@ -98,6 +100,16 @@ export default function ListCustomContext({ children }) {
     }
   }
 
+  //Funciones ligadas al botón de eliminación individual
+
+  function deleteItem(e){
+    const newTasks = tasks.filter((task) => e.target.id !== task.id)
+    console.log(e.target.id)
+    setTasks(newTasks)
+
+  }
+
+
 //Funciones para el componente AddItem
 
 async function addTaskDB(task) {
@@ -115,7 +127,7 @@ async function addTaskDB(task) {
 
 //Data que será proporcionada por el Context
 
-  const data = { tasks, clickCheck, addTaskDB, }
+  const data = { tasks, clickCheck, addTaskDB, deleteItem}
 
   return (
     <ListContext.Provider value={data}> {children} </ListContext.Provider>
