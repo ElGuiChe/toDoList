@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from "react";
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs, doc, updateDoc, addDoc } from "firebase/firestore";
+import { getFirestore, collection, getDocs, doc, updateDoc, addDoc, deleteDoc } from "firebase/firestore";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -57,7 +57,7 @@ export default function ListCustomContext({ children }) {
   //Funciones ligadas al checklist
 
   function clickCheck(e) {
-    
+
     if (e.target.checked === true) {
       const docRef = doc(db, "tasks", e.target.id);
       updateDoc(docRef, { status: "terminado" }).then(
@@ -67,8 +67,8 @@ export default function ListCustomContext({ children }) {
             if (task.id === e.target.id) {
               return {
                 ...task,
-                status: "terminado",  
-              }  
+                status: "terminado",
+              }
             }
             return task
           })
@@ -86,8 +86,8 @@ export default function ListCustomContext({ children }) {
             if (task.id === e.target.id) {
               return {
                 ...task,
-                status: "pendiente",  
-              }  
+                status: "pendiente",
+              }
             }
             return task
           })
@@ -102,32 +102,55 @@ export default function ListCustomContext({ children }) {
 
   //Funciones ligadas al botón de eliminación individual
 
-  function deleteItem(e){
+  function deleteItem(e) {
+    //Elimina el task y actualiza el UseState para refrercar el DOM del componente
     const newTasks = tasks.filter((task) => e.target.id !== task.id)
-    console.log(e.target.id)
     setTasks(newTasks)
-
+    //Elimina el task en la DB con de forma asincrona 
+    deleteItemDB()
+    async function deleteItemDB() {
+      await deleteDoc(doc(db, "tasks", e.target.id));
+    }
   }
 
 
-//Funciones para el componente AddItem
+  //Funciones para el componente AddItem
 
-async function addTaskDB(task) {
+  async function addTaskDB(task) {
 
-  const docRef = await addDoc(collection(db, "tasks"), {
-    task: task,
-    status: "pendiente",
-    time: new Date(),
-  });
-  console.log("Document written with ID: ", docRef.id);
-  window.location.reload();
-}
+    const docRef = await addDoc(collection(db, "tasks"), {
+      task: task,
+      status: "pendiente",
+      time: new Date(),
+    });
+    console.log("Document written with ID: ", docRef.id);
+    //Se refresca toda la pagina porque el ID se asigna en el servidor. No usar useState
+    window.location.reload();
+  }
 
+  //Funciones para el componente DeleteAllDoneButton
 
+  function deleteAllDoneButton() {
 
-//Data que será proporcionada por el Context
+    
+    
+    tasks.forEach(task => {
+      const newTasks = tasks.filter((task) => task.status !== "terminado")
+      setTasks(newTasks)
 
-  const data = { tasks, clickCheck, addTaskDB, deleteItem}
+      if (task.status === "terminado"){
+        async function deleteItemDB() {
+          await deleteDoc(doc(db, "tasks", task.id));
+        }
+      deleteItemDB()
+      }
+
+    })
+  }
+
+  //Data que será proporcionada por el Context
+
+  const data = { tasks, clickCheck, addTaskDB, deleteItem, deleteAllDoneButton }
 
   return (
     <ListContext.Provider value={data}> {children} </ListContext.Provider>
