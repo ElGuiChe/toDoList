@@ -1,4 +1,4 @@
-export default function DeleteButton() {
+export default function DeleteAllDoneButton() {
 
 
   return (

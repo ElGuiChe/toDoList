@@ -1,14 +1,17 @@
 import "./App.css";
 import ItemListContainer from "./ItemListContainer/ItemListContainer";
 import AddItem from "./AddItem/AddItem";
-import DeleteButton from "./DeleteButton/DeleteButton";
+import DeleteAllDoneButton from "./DeleteAllDoneButton/DeleteAllDoneButton";
+import ListContext from "./ListContext/ListContext";
 
 function App() {
   return (
     <div className="container">
-      <AddItem />
-      <ItemListContainer />
-      <DeleteButton/>
+      <ListContext>
+        <AddItem />
+        <ItemListContainer />
+        <DeleteAllDoneButton/>
+      </ListContext>
     </div>
   );
 }
