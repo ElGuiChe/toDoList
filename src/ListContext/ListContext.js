@@ -113,7 +113,6 @@ export default function ListCustomContext({ children }) {
     }
   }
 
-
   //Funciones para el componente AddItem
 
   async function addTaskDB(task) {
@@ -123,7 +122,7 @@ export default function ListCustomContext({ children }) {
       status: "pendiente",
       time: new Date(),
     });
-    console.log("Document written with ID: ", docRef.id);
+    
     //Se refresca toda la pagina porque el ID se asigna en el servidor. No usar useState
     window.location.reload();
   }
@@ -132,17 +131,20 @@ export default function ListCustomContext({ children }) {
 
   function deleteAllDoneButton() {
 
-    
-    
-    tasks.forEach(task => {
-      const newTasks = tasks.filter((task) => task.status !== "terminado")
-      setTasks(newTasks)
 
-      if (task.status === "terminado"){
+
+    tasks.forEach(task => {
+      
+
+      if (task.status === "terminado") {
+
+        const newTasks = tasks.filter((task) => task.status !== "terminado")
+        setTasks(newTasks)
+
         async function deleteItemDB() {
           await deleteDoc(doc(db, "tasks", task.id));
         }
-      deleteItemDB()
+        deleteItemDB()
       }
 
     })

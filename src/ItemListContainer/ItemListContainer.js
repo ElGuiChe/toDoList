@@ -6,7 +6,6 @@ import { ListContext } from "../ListContext/ListContext";
 export default function ItemListContainer() {
 
   const {tasks} = useContext(ListContext)
-  console.log(tasks)
 
   return (
     <>
